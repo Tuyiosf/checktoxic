@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมนักวิทยาศาสตร์ชีววิทยา</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Kanit', sans-serif; }
+       
+        .lab-background {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 50%, #581c87 100%);
+            position: relative;
+            overflow: hidden;
+        }
+       
+        .lab-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+            animation: labBubbles 20s ease-in-out infinite;
+        }
+       
+        @keyframes labBubbles {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+       
+        .microscope {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #374151, #6b7280);
+            border-radius: 10px;
+            position: relative;
+            animation: microscopeGlow 3s ease-in-out infinite alternate;
+        }
+       
+        .microscope::before {
+            content: '🔬';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+        }
+       
+        @keyframes microscopeGlow {
+            0% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            100% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
+        }
+       
+        .dna-helix {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #10b981, #059669);
+            border-radius: 50%;
+            position: relative;
+            animation: dnaRotate 4s linear infinite;
+        }
+       
+        .dna-helix::before {
+            content: '🧬';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+        }
+       
+        @keyframes dnaRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+       
+        .cell-animation {
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, #f59e0b, #d97706);
+            border-radius: 50%;
+            position: relative;
+            animation: cellPulse 2s ease-in-out infinite;
+        }
+       
+        .cell-animation::before {
+            content: '🦠';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 25px;
+        }
+       
+        @keyframes cellPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+       
+        .question-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+       
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: cardShine 3s ease-in-out infinite;
+        }
+       
+        @keyframes cardShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+       
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+       
+        .choice-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+       
+        .choice-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+       
+        .choice-btn:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+       
+        .choice-btn.correct {
+            background: linear-gradient(45deg, #10b981, #059669);
+            animation: correctPulse 0.6s ease-in-out;
+        }
+       
+        .choice-btn.wrong {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            animation: wrongShake 0.5s ease-in-out;
+        }
+       
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+       
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+       
+        .lab-equipment {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+       
+        .lab-equipment:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .lab-equipment:nth-child(2) { top: 20%; right: 10%; animation-delay: 2s; }
+        .lab-equipment:nth-child(3) { bottom: 30%; left: 8%; animation-delay: 4s; }
+        .lab-equipment:nth-child(4) { bottom: 10%; right: 5%; animation-delay: 1s; }
+       
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+       
+        .progress-bar {
+            background: linear-gradient(90deg, #10b981, #059669);
+            height: 8px;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+       
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: progressShine 2s ease-in-out infinite;
+        }
+       
+        @keyframes progressShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+       
+        .scientist-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            animation: avatarBreathe 3s ease-in-out infinite;
+        }
+       
+        #characterDialog {
+            transition: opacity 0.3s ease-in-out;
+        }
+       
+        @keyframes avatarBreathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+       
+        .achievement-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 1000;
+            animation: achievementSlide 3s ease-in-out;
+        }
+       
+        @keyframes achievementSlide {
+            0% { transform: translateX(100%); opacity: 0; }
+            20%, 80% { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+       
+        .particle-system {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+       
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #fbbf24;
+            border-radius: 50%;
+            animation: particleFloat 3s ease-out forwards;
+        }
+       
+        @keyframes particleFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) scale(0);
+            }
+        }
+       
+        .timer-critical {
+            animation: timerPulse 1s infinite;
+            color: #ef4444 !important;
+        }
+       
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+       
+        .lab-flask {
+            width: 40px;
+            height: 40px;
+            font-size: 30px;
+            animation: bubbleReaction 4s ease-in-out infinite;
+        }
+       
+        @keyframes bubbleReaction {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(5deg); }
+            75% { transform: scale(0.9) rotate(-5deg); }
+        }
+    </style>
+</head>
+<body class="lab-background min-h-screen">
+    <!-- Lab Equipment Background -->
+    <div class="lab-equipment">🧪</div>
+    <div class="lab-equipment">⚗️</div>
+    <div class="lab-equipment">🔬</div>
+    <div class="lab-equipment">🧬</div>
+
+    <!-- Particle System -->
+    <div class="particle-system" id="particleSystem"></div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="question-card rounded-2xl shadow-2xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="microscope mx-auto mb-4"></div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">🧪 ห้องแล็บชีววิทยา</h1>
+                <p class="text-gray-600">ยินดีต้อนรับสู่ห้องปฏิบัติการชีววิทยา</p>
+                <p class="text-sm text-blue-600 mt-2">เตรียมพร้อมเป็นนักวิทยาศาสตร์!</p>
+            </div>
+           
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อนักวิทยาศาสตร์</label>
+                    <input type="text" id="username" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="กรอกชื่อของคุณ">
+                </div>
+               
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">รหัสห้องแล็บ</label>
+                    <input type="password" id="password" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="กรอกรหัสผ่าน">
+                </div>
+               
+                <button type="submit"
+                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105">
+                    🔬 เข้าสู่ห้องแล็บ
+                </button>
+               
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p class="text-sm text-blue-800">
+                        <strong>💡 เคล็ดลับ:</strong> นี่เป็นห้องแล็บจำลอง เพื่อการเรียนรู้เท่านั้น
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tutorial Screen -->
+    <div id="tutorialScreen" class="hidden min-h-screen p-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="question-card rounded-2xl p-8 mb-6">
+                <h1 class="text-4xl font-bold text-gray-800 text-center mb-8">🎓 คู่มือนักวิทยาศาสตร์</h1>
+               
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Mission -->
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6">
+                        <h3 class="text-2xl font-bold text-blue-600 mb-4">🎯 ภารกิจของคุณ</h3>
+                        <ul class="text-gray-700 space-y-3">
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2">🧬</span>
+                                <span>ตอบคำถามชีววิทยาระดับ ม.ปลาย</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2">🔬</span>
+                                <span>สำรวจความลึกลับของสิ่งมีชีวิต</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2">⚗️</span>
+                                <span>ใช้เครื่องมือวิทยาศาสตร์ช่วยเหลือ</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2">🏆</span>
+                                <span>สะสมคะแนนและปลดล็อกความรู้ใหม่</span>
+                            </li>
+                        </ul>
+                    </div>
+                   
+                    <!-- Lab Tools -->
+                    <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-6">
+                        <h3 class="text-2xl font-bold text-green-600 mb-4">🧪 เครื่องมือห้องแล็บ</h3>
+                        <div class="space-y-3 text-gray-700">
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">🔬</span>
+                                <div>
+                                    <div class="font-semibold">กล้องจุลทรรศน์</div>
+                                    <div class="text-sm text-gray-600">ดูคำใบ้เพิ่มเติม</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">🧬</span>
+                                <div>
+                                    <div class="font-semibold">เครื่องวิเคราะห์ DNA</div>
+                                    <div class="text-sm text-gray-600">ข้ามคำถามยาก</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">⚗️</span>
+                                <div>
+                                    <div class="font-semibold">สารเคมีพิเศษ</div>
+                                    <div class="text-sm text-gray-600">เพิ่มเวลาในการทำข้อสอบ</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">🦠</span>
+                                <div>
+                                    <div class="font-semibold">เซรุ่มเสริมสมอง</div>
+                                    <div class="text-sm text-gray-600">คะแนนเพิ่มเป็น 2 เท่า</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Topics -->
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-purple-600 mb-4">📚 หัวข้อที่จะพบ</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-gray-700">
+                        <div class="text-center">
+                            <div class="text-3xl mb-2">🧬</div>
+                            <div class="font-semibold">พันธุศาสตร์</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl mb-2">🦠</div>
+                            <div class="font-semibold">จุลชีววิทยา</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl mb-2">🌱</div>
+                            <div class="font-semibold">พฤกษศาสตร์</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl mb-2">🐛</div>
+                            <div class="font-semibold">สัตววิทยา</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Scoring -->
+                <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-orange-600 mb-4">🏆 ระบบคะแนน</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-700">
+                        <div class="text-center">
+                            <div class="text-3xl mb-2">✅</div>
+                            <div class="font-semibold">ตอบถูก</div>
+                            <div class="text-sm text-gray-600">+100 คะแนน</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl mb-2">🔥</div>
+                            <div class="font-semibold">ตอบถูกติดต่อกัน</div>
+                            <div class="text-sm text-gray-600">โบนัส +50</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl mb-2">⚡</div>
+                            <div class="font-semibold">ตอบเร็ว</div>
+                            <div class="text-sm text-gray-600">โบนัสเวลา</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="text-center">
+                    <button id="startGameBtn" class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-12 py-4 rounded-xl text-xl font-bold hover:from-green-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105">
+                        🚀 เริ่มการทดลอง!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="hidden min-h-screen p-4">
+        <!-- Header -->
+        <div class="question-card rounded-2xl p-6 mb-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="scientist-avatar">👨‍🔬</div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">ห้องแล็บชีววิทยา</h1>
+                        <p class="text-blue-600">นักวิทยาศาสตร์ <span id="playerName" class="font-semibold"></span></p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-yellow-600" id="score">🏆 0 คะแนน</div>
+                    <div class="text-lg text-blue-600" id="level">📊 ข้อที่ 1</div>
+                    <div class="text-lg text-green-600" id="combo">🔥 0 ติดต่อกัน</div>
+                    <div class="text-md text-orange-600" id="timer">⏰ 30 วินาที</div>
+                </div>
+            </div>
+           
+            <!-- Progress Bar -->
+            <div class="mt-4">
+                <div class="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>ความคืบหน้า</span>
+                    <span id="progressText">0/10</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="progress-bar rounded-full h-2" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Lab Tools -->
+            <div class="question-card rounded-2xl p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    🧪 เครื่องมือห้องแล็บ
+                </h2>
+               
+                <div class="space-y-3">
+                    <button id="microscopeBtn" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-between">
+                        <span>🔬 กล้องจุลทรรศน์</span>
+                        <span class="text-sm" id="microscopeCount">3</span>
+                    </button>
+                   
+                    <button id="dnaBtn" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all duration-300 flex items-center justify-between">
+                        <span>🧬 เครื่องวิเคราะห์ DNA</span>
+                        <span class="text-sm" id="dnaCount">2</span>
+                    </button>
+                   
+                    <button id="chemicalBtn" class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-purple-600 hover:to-purple-700 transition-all duration-300 flex items-center justify-between">
+                        <span>⚗️ สารเคมีพิเศษ</span>
+                        <span class="text-sm" id="chemicalCount">2</span>
+                    </button>
+                   
+                    <button id="serumBtn" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-3 px-4 rounded-lg font-medium hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 flex items-center justify-between">
+                        <span>🦠 เซรุ่มเสริมสมอง</span>
+                        <span class="text-sm" id="serumCount">1</span>
+                    </button>
+                </div>
+               
+                <!-- Lab Status -->
+                <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-semibold text-gray-700 mb-2">📈 สถานะห้องแล็บ</h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span>อุณหภูมิ:</span>
+                            <span class="text-green-600">25°C ✅</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>ความชื้น:</span>
+                            <span class="text-blue-600">60% ✅</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>ระดับ pH:</span>
+                            <span class="text-purple-600">7.0 ✅</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Area -->
+            <div class="lg:col-span-2 question-card rounded-2xl p-6">
+                <!-- Character Dialog -->
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6 border-l-4 border-blue-500">
+                    <div class="flex items-start space-x-3">
+                        <div class="text-4xl animate-bounce" id="characterAvatar">👨‍🔬</div>
+                        <div class="flex-1">
+                            <div class="font-bold text-blue-700" id="characterName">ดร.วิทยา นักชีววิทยา</div>
+                            <div class="text-gray-700 mt-1" id="characterDialog">
+                                ยินดีต้อนรับสู่ห้องแล็บ! มาทดสอบความรู้ชีววิทยากันเถอะ 🧬
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                        <span id="questionIcon">🧬</span>
+                        <span class="ml-2" id="questionTopic">พันธุศาสตร์</span>
+                    </h2>
+                    <div class="flex items-center space-x-2">
+                        <div class="dna-helix"></div>
+                        <div class="cell-animation"></div>
+                        <div class="lab-flask">🧪</div>
+                        <!-- Next Button -->
+                        <button id="nextBtn" class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-lg font-medium hover:from-orange-600 hover:to-red-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            ข้าม ⏭️
+                        </button>
+                    </div>
+                </div>
+               
+                <!-- Question -->
+                <div class="mb-6">
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 mb-4">
+                        <p class="text-lg text-gray-800 font-medium" id="questionText">
+                            กำลังโหลดคำถาม...
+                        </p>
+                    </div>
+                   
+                    <!-- Image placeholder -->
+                    <div id="questionImage" class="hidden mb-4 text-center">
+                        <div class="inline-block p-4 bg-gray-100 rounded-lg">
+                            <span class="text-6xl" id="questionImageIcon">🔬</span>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Choices -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="choicesContainer">
+                    <!-- Choices will be generated here -->
+                </div>
+               
+                <!-- Explanation -->
+                <div id="explanation" class="hidden mt-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border-l-4 border-green-500">
+                    <h4 class="font-bold text-green-700 mb-2">💡 คำอธิบาย</h4>
+                    <p class="text-gray-700" id="explanationText"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Modal -->
+        <div id="resultModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div class="question-card rounded-2xl p-8 max-w-md w-full text-center">
+                <div id="resultIcon" class="text-6xl mb-4">🎉</div>
+                <h3 id="resultTitle" class="text-2xl font-bold text-gray-800 mb-2">ยอดเยี่ยม!</h3>
+                <p id="resultMessage" class="text-gray-600 mb-6">คุณตอบถูกต้อง!</p>
+                <div id="scoreBreakdown" class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                    <h4 class="font-bold text-gray-700 mb-2">📊 รายละเอียดคะแนน</h4>
+                    <div class="space-y-1 text-sm text-gray-600">
+                        <div class="flex justify-between">
+                            <span>คะแนนพื้นฐาน:</span>
+                            <span id="baseScore">+100</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>โบนัสเวลา:</span>
+                            <span id="timeBonus">+20</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>โบนัสติดต่อกัน:</span>
+                            <span id="comboBonus">+50</span>
+                        </div>
+                        <hr class="my-2">
+                        <div class="flex justify-between font-bold text-gray-800">
+                            <span>รวม:</span>
+                            <span id="totalScore">+170</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="nextQuestion" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-300">
+                    ข้อถัดไป 🚀
+                </button>
+            </div>
+        </div>
+
+        <!-- Final Result Modal -->
+        <div id="finalModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div class="question-card rounded-2xl p-8 max-w-lg w-full text-center">
+                <div class="text-6xl mb-4">🏆</div>
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">การทดลองเสร็จสิ้น!</h3>
+                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-6 mb-6">
+                    <div class="text-4xl font-bold text-orange-600 mb-2" id="finalScore">0</div>
+                    <div class="text-lg text-gray-700 mb-4">คะแนนรวม</div>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <div class="font-bold text-green-600" id="correctCount">0</div>
+                            <div class="text-gray-600">ตอบถูก</div>
+                        </div>
+                        <div>
+                            <div class="font-bold text-red-600" id="wrongCount">0</div>
+                            <div class="text-gray-600">ตอบผิด</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <div class="text-lg font-bold text-gray-800 mb-2" id="gradeText">เกรด A</div>
+                    <div class="text-gray-600" id="gradeComment">ยอดเยี่ยม! คุณเป็นนักวิทยาศาสตร์ที่แท้จริง!</div>
+                </div>
+                <button id="playAgain" class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:from-green-700 hover:to-blue-700 transition-all duration-300">
+                    🔄 ทดลองใหม่
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let currentQuestion = 0;
+        let score = 0;
+        let combo = 0;
+        let timeLeft = 30;
+        let gameTimer = null;
+        let playerName = '';
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let isDoubleScore = false;
+       
+        // Character dialogs
+        const characters = {
+            scientist: {
+                name: "ดร.วิทยา นักชีววิทยา",
+                avatar: "👨‍🔬",
+                dialogs: {
+                    welcome: "ยินดีต้อนรับสู่ห้องแล็บ! มาทดสอบความรู้ชีววิทยากันเถอะ 🧬",
+                    correct: ["ยอดเยี่ยม! คุณตอบถูกต้อง! 🎉", "เก่งมาก! ความรู้ของคุณแม่นยำ! ✨", "สุดยอด! นี่คือคำตอบที่ถูกต้อง! 🌟"],
+                    wrong: ["ไม่เป็นไร ลองใหม่นะ! 😊", "เกือบแล้ว! ศึกษาเพิ่มเติมนะ 📚", "ไม่ถูกต้อง แต่เป็นการเรียนรู้! 💪"],
+                    hint: "ให้ฉันช่วยคุณหน่อย... ดูที่ตัวเลือกนี้! 🔍",
+                    timeUp: "หมดเวลาแล้ว! อย่าเพิ่งท้อนะ! ⏰",
+                    encouragement: ["คุณทำได้! ต่อสู้เถอะ! 💪", "สู้ๆ นะ! เชื่อในตัวเอง! 🌟", "อย่าเพิ่งยอมแพ้! คุณเก่งแล้ว! ✨"]
+                }
+            },
+            assistant: {
+                name: "น้องแล็บ ผู้ช่วยนักวิทยาศาสตร์",
+                avatar: "👩‍🔬",
+                dialogs: {
+                    welcome: "สวัสดีค่ะ! ฉันจะช่วยคุณในการทดลองนะคะ! 😊",
+                    correct: ["เยี่ยมเลยค่ะ! 🎊", "ถูกต้องค่ะ! คุณเก่งมาก! 💖", "ดีใจด้วยค่ะ! คำตอบถูกต้อง! 🌸"],
+                    wrong: ["ไม่เป็นไรค่ะ ลองใหม่นะคะ! 🌺", "เกือบแล้วค่ะ! อย่าท้อนะคะ! 🌷", "ไม่ถูกค่ะ แต่ไม่เป็นไร! 🌻"],
+                    hint: "ฉันจะช่วยคุณนะคะ! ดูตรงนี้ค่ะ! ✨",
+                    timeUp: "หมดเวลาแล้วค่ะ! ไม่เป็นไรนะคะ! 🕐",
+                    encouragement: ["สู้ๆ นะคะ! 💪", "คุณทำได้แน่นอนค่ะ! 🌟", "เชื่อมั่นในตัวเองนะคะ! 💫"]
+                }
+            },
+            professor: {
+                name: "ศ.ดร.ปราชญ์ อาจารย์ใหญ่",
+                avatar: "👨‍🏫",
+                dialogs: {
+                    welcome: "เอาล่ะ นักเรียน! มาดูว่าคุณเรียนมาดีแค่ไหน! 📖",
+                    correct: ["ดีมาก! คุณเข้าใจหลักการแล้ว! 📚", "ถูกต้อง! นี่คือความรู้ที่แท้จริง! 🎓", "เยี่ยม! คุณมีพื้นฐานที่แข็งแกร่ง! 📖"],
+                    wrong: ["ยังไม่ถูก ลองคิดใหม่! 🤔", "ผิด! กลับไปอ่านหนังสืออีกครั้ง! 📚", "ไม่ถูกต้อง ต้องศึกษาเพิ่ม! 📖"],
+                    hint: "ให้อาจารย์ช่วยหน่อย... คำตอบอยู่ตรงนี้! 👆",
+                    timeUp: "หมดเวลา! ต้องฝึกให้เร็วขึ้น! ⏱️",
+                    encouragement: ["ตั้งใจเรียนนะ! 📚", "ความพยายามอยู่ที่ไหน ความสำเร็จอยู่ที่นั่น! 🎯", "อย่าท้อ! ความรู้คือพลัง! 💡"]
+                }
+            }
+        };
+       
+        let currentCharacter = 'scientist';
+       
+        // Lab tools
+        let labTools = {
+            microscope: 3,  // hints
+            dna: 2,         // skip question
+            chemical: 2,    // add time
+            serum: 1        // double score
+        };
+
+        // Biology questions (สสวท. ม.ปลาย)
+        const questions = [
+            {
+                topic: "พันธุศาสตร์",
+                icon: "🧬",
+                question: "ในการผสมข้ามระหว่างพ่อแม่ที่มีลักษณะ Aa x Aa อัตราส่วนของลูกที่มีฟีโนไทป์เด่นต่อลูกที่มีฟีโนไทป์ด้อยเป็นเท่าใด?",
+                choices: ["1:1", "2:1", "3:1", "1:3"],
+                correct: 2,
+                explanation: "จากการผสมข้ามระหว่าง Aa x Aa จะได้ AA : Aa : aa = 1:2:1 ซึ่งฟีโนไทป์เด่น (AA+Aa) : ฟีโนไทป์ด้อย (aa) = 3:1",
+                image: "🧬"
+            },
+            {
+                topic: "จุลชีววิทยา",
+                icon: "🦠",
+                question: "แบคทีเรียชนิดใดที่สามารถทำให้เกิดโรคปอดบวมได้?",
+                choices: ["Streptococcus pneumoniae", "Escherichia coli", "Lactobacillus", "Rhizobium"],
+                correct: 0,
+                explanation: "Streptococcus pneumoniae เป็นแบคทีเรียที่เป็นสาเหตุหลักของโรคปอดบวม (Pneumonia) ในมนุษย์",
+                image: "🦠"
+            },
+            {
+                topic: "พฤกษศาสตร์",
+                icon: "🌱",
+                question: "ในกระบวนการสังเคราะห์แสงของพืช แสงจะถูกดูดซับโดยสารใด?",
+                choices: ["คลอโรฟิลล์", "แคโรทีน", "แซนโทฟิลล์", "ทั้งหมดที่กล่าวมา"],
+                correct: 3,
+                explanation: "ในกระบวนการสังเคราะห์แสง พืชใช้สีเขียวใบ (คลอโรฟิลล์) เป็นหลัก แต่ยังมีสารช่วยอื่นๆ เช่น แคโรทีน และแซนโทฟิลล์",
+                image: "🌱"
+            },
+            {
+                topic: "สัตววิทยา",
+                icon: "🐛",
+                question: "ระบบหายใจของแมลงเรียกว่าอะไร?",
+                choices: ["ระบบเหงือก", "ระบบปอด", "ระบบท่อลม", "ระบบผิวหนัง"],
+                correct: 2,
+                explanation: "แมลงมีระบบหายใจแบบท่อลม (Tracheal system) ที่นำอากาศเข้าสู่เนื้อเยื่อโดยตรง",
+                image: "🐛"
+            },
+            {
+                topic: "ชีวเคมี",
+                icon: "⚗️",
+                question: "เอนไซม์ที่ย่อยโปรตีนในกระเพาะอาหารคือ?",
+                choices: ["เปปซิน", "ไลเปส", "อะไมเลส", "ทริปซิน"],
+                correct: 0,
+                explanation: "เปปซิน (Pepsin) เป็นเอนไซม์ที่ทำงานในสภาพกรดของกระเพาะอาหาร ทำหน้าที่ย่อยโปรตีน",
+                image: "⚗️"
+            },
+            {
+                topic: "นิเวศวิทยา",
+                icon: "🌍",
+                question: "ในห่วงโซ่อาหาร ผู้ผลิตปฐมภูมิคือ?",
+                choices: ["สัตว์กินเนื้อ", "สัตว์กินพืช", "พืช", "เชื้อราย่อยสลาย"],
+                correct: 2,
+                explanation: "ผู้ผลิตปฐมภูมิ (Primary producer) คือพืชที่สามารถสังเคราะห์แสงเพื่อผลิตอาหารเอง",
+                image: "🌍"
+            },
+            {
+                topic: "กายวิภาคศาสตร์",
+                icon: "🫀",
+                question: "หัวใจของมนุษย์มีกี่ห้อง?",
+                choices: ["2 ห้อง", "3 ห้อง", "4 ห้อง", "5 ห้อง"],
+                correct: 2,
+                explanation: "หัวใจของมนุษย์มี 4 ห้อง ประกอบด้วย ห้องหัวใจซ้ายบน ซ้ายล่าง ขวาบน และขวาล่าง",
+                image: "🫀"
+            },
+            {
+                topic: "วิวัฒนาการ",
+                icon: "🐒",
+                question: "ทฤษฎีวิวัฒนาการของดาร์วินเรียกว่าอะไร?",
+                choices: ["การคัดเลือกโดยธรรมชาติ", "การกลายพันธุ์", "การไหลของยีน", "การดริฟต์ของยีน"],
+                correct: 0,
+                explanation: "ชาร์ลส์ ดาร์วิน เสนอทฤษฎี 'การคัดเลือกโดยธรรมชาติ' (Natural Selection) เป็นกลไกหลักของวิวัฒนาการ",
+                image: "🐒"
+            },
+            {
+                topic: "ชีววิทยาโมเลกุล",
+                icon: "🧪",
+                question: "DNA ประกอบด้วยเบสใดบ้าง?",
+                choices: ["A, T, G, C", "A, U, G, C", "A, T, G, U", "T, U, G, C"],
+                correct: 0,
+                explanation: "DNA ประกอบด้วยเบส 4 ชนิด คือ Adenine (A), Thymine (T), Guanine (G), และ Cytosine (C)",
+                image: "🧪"
+            },
+            {
+                topic: "ภูมิคุ้มกันวิทยา",
+                icon: "🛡️",
+                question: "เซลล์ใดที่ทำหน้าที่ผลิตแอนติบอดี?",
+                choices: ["เซลล์ T", "เซลล์ B", "เซลล์ NK", "แมคโครฟาจ"],
+                correct: 1,
+                explanation: "เซลล์ B (B cells) เมื่อได้รับการกระตุ้นจะแปลงเป็น Plasma cells และผลิตแอนติบอดีเพื่อต่อสู้กับเชื้อโรค",
+                image: "🛡️"
+            }
+        ];
+
+        // Shuffle questions
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Initialize game
+        shuffleArray(questions);
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            if (username.trim()) {
+                playerName = username;
+                startGame();
+            }
+        });
+
+        function startGame() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('tutorialScreen').classList.remove('hidden');
+        }
+
+        document.getElementById('startGameBtn').addEventListener('click', function() {
+            document.getElementById('tutorialScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('playerName').textContent = playerName;
+            startTimer();
+            loadQuestion();
+            updateLabToolsDisplay();
+        });
+
+        function startTimer() {
+            gameTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = `⏰ ${timeLeft} วินาที`;
+               
+                if (timeLeft <= 10) {
+                    document.getElementById('timer').classList.add('timer-critical');
+                }
+               
+                if (timeLeft <= 0) {
+                    clearInterval(gameTimer);
+                    timeUp();
+                }
+            }, 1000);
+        }
+
+        function timeUp() {
+            wrongAnswers++;
+            combo = 0;
+            const character = characters[currentCharacter];
+            updateCharacterDialog(character.dialogs.timeUp);
+            document.getElementById('nextBtn').disabled = true;
+            showResult(false, "หมดเวลา! ⏰");
+        }
+
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                showFinalResult();
+                return;
+            }
+
+            const q = questions[currentQuestion];
+           
+            // Change character every few questions
+            if (currentQuestion % 3 === 0) {
+                const characterKeys = Object.keys(characters);
+                currentCharacter = characterKeys[Math.floor(currentQuestion / 3) % characterKeys.length];
+                updateCharacterDisplay();
+            }
+           
+            // Update UI
+            document.getElementById('questionIcon').textContent = q.icon;
+            document.getElementById('questionTopic').textContent = q.topic;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('level').textContent = `📊 ข้อที่ ${currentQuestion + 1}`;
+           
+            // Show character encouragement
+            if (currentQuestion > 0) {
+                const character = characters[currentCharacter];
+                const encouragements = character.dialogs.encouragement;
+                updateCharacterDialog(encouragements[Math.floor(Math.random() * encouragements.length)]);
+            }
+           
+            // Show image if available
+            if (q.image) {
+                document.getElementById('questionImage').classList.remove('hidden');
+                document.getElementById('questionImageIcon').textContent = q.image;
+            } else {
+                document.getElementById('questionImage').classList.add('hidden');
+            }
+           
+            // Update progress
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${currentQuestion}/${questions.length}`;
+           
+            // Generate choices
+            const container = document.getElementById('choicesContainer');
+            container.innerHTML = '';
+           
+            q.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.className = 'choice-btn bg-gradient-to-r from-gray-100 to-gray-200 hover:from-blue-100 hover:to-blue-200 text-gray-800 py-4 px-6 rounded-lg font-medium transition-all duration-300 text-left';
+                button.innerHTML = `
+                    <div class="flex items-center">
+                        <span class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">
+                            ${String.fromCharCode(65 + index)}
+                        </span>
+                        <span>${choice}</span>
+                    </div>
+                `;
+                button.addEventListener('click', () => selectAnswer(index));
+                container.appendChild(button);
+            });
+           
+            // Hide explanation
+            document.getElementById('explanation').classList.add('hidden');
+           
+            // Reset timer and enable next button
+            timeLeft = 30;
+            document.getElementById('timer').classList.remove('timer-critical');
+            document.getElementById('nextBtn').disabled = false;
+           
+            // Create lab atmosphere
+            createLabParticles();
+        }
+       
+        function updateCharacterDisplay() {
+            const character = characters[currentCharacter];
+            document.getElementById('characterAvatar').textContent = character.avatar;
+            document.getElementById('characterName').textContent = character.name;
+            updateCharacterDialog(character.dialogs.welcome);
+        }
+       
+        function updateCharacterDialog(message) {
+            const dialogElement = document.getElementById('characterDialog');
+            dialogElement.style.opacity = '0';
+            setTimeout(() => {
+                dialogElement.textContent = message;
+                dialogElement.style.opacity = '1';
+            }, 200);
+        }
+
+        function selectAnswer(selectedIndex) {
+            clearInterval(gameTimer);
+           
+            const q = questions[currentQuestion];
+            const isCorrect = selectedIndex === q.correct;
+            const buttons = document.querySelectorAll('.choice-btn');
+            const character = characters[currentCharacter];
+           
+            // Disable all buttons and next button
+            buttons.forEach(btn => btn.style.pointerEvents = 'none');
+            document.getElementById('nextBtn').disabled = true;
+           
+            // Show correct/wrong
+            buttons[selectedIndex].classList.add(isCorrect ? 'correct' : 'wrong');
+            if (!isCorrect) {
+                buttons[q.correct].classList.add('correct');
+            }
+           
+            // Show character reaction
+            if (isCorrect) {
+                const correctDialogs = character.dialogs.correct;
+                updateCharacterDialog(correctDialogs[Math.floor(Math.random() * correctDialogs.length)]);
+            } else {
+                const wrongDialogs = character.dialogs.wrong;
+                updateCharacterDialog(wrongDialogs[Math.floor(Math.random() * wrongDialogs.length)]);
+            }
+           
+            // Show explanation
+            document.getElementById('explanation').classList.remove('hidden');
+            document.getElementById('explanationText').textContent = q.explanation;
+           
+            // Update stats
+            if (isCorrect) {
+                correctAnswers++;
+                combo++;
+            } else {
+                wrongAnswers++;
+                combo = 0;
+            }
+           
+            // Play sound effect
+            playLabSound(isCorrect ? 'success' : 'error');
+           
+            setTimeout(() => {
+                showResult(isCorrect);
+            }, 2000);
+        }
+
+        function showResult(isCorrect, customMessage = null) {
+            const modal = document.getElementById('resultModal');
+            const icon = document.getElementById('resultIcon');
+            const title = document.getElementById('resultTitle');
+            const message = document.getElementById('resultMessage');
+           
+            if (customMessage) {
+                icon.textContent = '⏰';
+                title.textContent = 'หมดเวลา!';
+                message.textContent = customMessage;
+            } else if (isCorrect) {
+                icon.textContent = '🎉';
+                title.textContent = 'ยอดเยี่ยม!';
+                message.textContent = 'คุณตอบถูกต้อง!';
+            } else {
+                icon.textContent = '😅';
+                title.textContent = 'เกือบแล้ว!';
+                message.textContent = 'ลองใหม่ในข้อถัดไป!';
+            }
+           
+            // Calculate score
+            let baseScore = isCorrect ? 100 : 0;
+            let timeBonus = isCorrect ? Math.max(0, timeLeft * 2) : 0;
+            let comboBonus = isCorrect && combo > 1 ? (combo - 1) * 50 : 0;
+            let totalRoundScore = baseScore + timeBonus + comboBonus;
+           
+            // Apply double score if active
+            if (isDoubleScore && isCorrect) {
+                totalRoundScore *= 2;
+                isDoubleScore = false;
+                showAchievement('🦠 เซรุ่มเสริมสมองใช้แล้ว! คะแนน x2');
+            }
+           
+            score += totalRoundScore;
+           
+            // Update score breakdown
+            document.getElementById('baseScore').textContent = `+${baseScore}`;
+            document.getElementById('timeBonus').textContent = `+${timeBonus}`;
+            document.getElementById('comboBonus').textContent = `+${comboBonus}`;
+            document.getElementById('totalScore').textContent = `+${totalRoundScore}`;
+           
+            // Update UI
+            document.getElementById('score').textContent = `🏆 ${score} คะแนน`;
+            document.getElementById('combo').textContent = `🔥 ${combo} ติดต่อกัน`;
+           
+            // Show achievements
+            if (combo === 3) showAchievement('🔥 Combo x3! ได้เครื่องมือเพิ่ม!');
+            if (combo === 5) showAchievement('⚡ Amazing! Combo x5!');
+            if (combo === 7) showAchievement('🌟 Incredible! Combo x7!');
+           
+            // Add bonus tools for high combos
+            if (combo % 3 === 0 && combo > 0) {
+                labTools.microscope++;
+                updateLabToolsDisplay();
+            }
+           
+            modal.classList.remove('hidden');
+           
+            if (isCorrect) {
+                createCelebrationParticles();
+            }
+        }
+
+        function showFinalResult() {
+            const modal = document.getElementById('finalModal');
+            const finalScore = document.getElementById('finalScore');
+            const correctCount = document.getElementById('correctCount');
+            const wrongCount = document.getElementById('wrongCount');
+            const gradeText = document.getElementById('gradeText');
+            const gradeComment = document.getElementById('gradeComment');
+           
+            finalScore.textContent = score;
+            correctCount.textContent = correctAnswers;
+            wrongCount.textContent = wrongAnswers;
+           
+            // Calculate grade
+            const percentage = (correctAnswers / questions.length) * 100;
+            let grade, comment;
+           
+            if (percentage >= 90) {
+                grade = 'A+';
+                comment = '🏆 นักวิทยาศาสตร์ระดับเทพ! คุณเก่งมาก!';
+            } else if (percentage >= 80) {
+                grade = 'A';
+                comment = '🌟 ยอดเยี่ยม! คุณมีความรู้ชีววิทยาที่ดีมาก!';
+            } else if (percentage >= 70) {
+                grade = 'B+';
+                comment = '👍 ดีมาก! คุณมีพื้นฐานที่แข็งแกร่ง!';
+            } else if (percentage >= 60) {
+                grade = 'B';
+                comment = '😊 ดี! ลองศึกษาเพิ่มเติมนะ!';
+            } else if (percentage >= 50) {
+                grade = 'C+';
+                comment = '📚 ผ่าน! แต่ควรทบทวนเพิ่มเติม!';
+            } else {
+                grade = 'F';
+                comment = '💪 ไม่เป็นไร! ลองใหม่และศึกษาเพิ่มเติม!';
+            }
+           
+            gradeText.textContent = `เกรด ${grade}`;
+            gradeComment.textContent = comment;
+           
+            modal.classList.remove('hidden');
+            createCelebrationParticles();
+        }
+
+        // Lab tools functionality
+        document.getElementById('microscopeBtn').addEventListener('click', function() {
+            if (labTools.microscope > 0) {
+                labTools.microscope--;
+                updateLabToolsDisplay();
+                showHint();
+                playLabSound('tool');
+            }
+        });
+
+        document.getElementById('dnaBtn').addEventListener('click', function() {
+            if (labTools.dna > 0) {
+                labTools.dna--;
+                updateLabToolsDisplay();
+                skipQuestion();
+                playLabSound('tool');
+            }
+        });
+
+        document.getElementById('chemicalBtn').addEventListener('click', function() {
+            if (labTools.chemical > 0) {
+                labTools.chemical--;
+                updateLabToolsDisplay();
+                addTime();
+                playLabSound('tool');
+            }
+        });
+
+        document.getElementById('serumBtn').addEventListener('click', function() {
+            if (labTools.serum > 0) {
+                labTools.serum--;
+                updateLabToolsDisplay();
+                activateDoubleScore();
+                playLabSound('tool');
+            }
+        });
+
+        function updateLabToolsDisplay() {
+            document.getElementById('microscopeCount').textContent = labTools.microscope;
+            document.getElementById('dnaCount').textContent = labTools.dna;
+            document.getElementById('chemicalCount').textContent = labTools.chemical;
+            document.getElementById('serumCount').textContent = labTools.serum;
+           
+            // Disable buttons if no tools left
+            document.getElementById('microscopeBtn').disabled = labTools.microscope <= 0;
+            document.getElementById('dnaBtn').disabled = labTools.dna <= 0;
+            document.getElementById('chemicalBtn').disabled = labTools.chemical <= 0;
+            document.getElementById('serumBtn').disabled = labTools.serum <= 0;
+        }
+
+        function showHint() {
+            const q = questions[currentQuestion];
+            const buttons = document.querySelectorAll('.choice-btn');
+            const character = characters[currentCharacter];
+           
+            // Highlight correct answer
+            buttons[q.correct].style.background = 'linear-gradient(45deg, #10b981, #059669)';
+            buttons[q.correct].style.color = 'white';
+            buttons[q.correct].style.animation = 'correctPulse 1s ease-in-out infinite';
+           
+            // Show character hint dialog
+            updateCharacterDialog(character.dialogs.hint);
+           
+            showAchievement('🔬 กล้องจุลทรรศน์แสดงคำใบ้แล้ว!');
+           
+            setTimeout(() => {
+                buttons[q.correct].style.background = '';
+                buttons[q.correct].style.color = '';
+                buttons[q.correct].style.animation = '';
+            }, 3000);
+        }
+
+        function skipQuestion() {
+            clearInterval(gameTimer);
+            correctAnswers++; // Count as correct
+            combo++;
+            score += 50; // Reduced score for skipping
+           
+            showAchievement('🧬 เครื่องวิเคราะห์ DNA ข้ามคำถามแล้ว!');
+           
+            setTimeout(() => {
+                nextQuestion();
+            }, 1500);
+        }
+
+        function addTime() {
+            timeLeft += 15;
+            showAchievement('⚗️ สารเคมีพิเศษเพิ่มเวลา +15 วินาที!');
+        }
+
+        function activateDoubleScore() {
+            isDoubleScore = true;
+            showAchievement('🦠 เซรุ่มเสริมสมองเปิดใช้งาน! คะแนนเพิ่มเป็น 2 เท่า!');
+        }
+
+        function showAchievement(text) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement-popup';
+            achievement.textContent = text;
+            document.body.appendChild(achievement);
+           
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+
+        function createLabParticles() {
+            const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+           
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.style.position = 'fixed';
+                    particle.style.width = '4px';
+                    particle.style.height = '4px';
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.borderRadius = '50%';
+                    particle.style.left = Math.random() * window.innerWidth + 'px';
+                    particle.style.top = window.innerHeight + 'px';
+                    particle.style.pointerEvents = 'none';
+                    particle.style.zIndex = '998';
+                    particle.style.animation = 'particleFloat 4s ease-out forwards';
+                   
+                    document.body.appendChild(particle);
+                   
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 4000);
+                }, i * 200);
+            }
+        }
+
+        function createCelebrationParticles() {
+            const colors = ['#fbbf24', '#10b981', '#3b82f6', '#ef4444', '#8b5cf6'];
+           
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = (window.innerWidth / 2 + (Math.random() - 0.5) * 200) + 'px';
+                    particle.style.top = (window.innerHeight / 2) + 'px';
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                   
+                    document.getElementById('particleSystem').appendChild(particle);
+                   
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 3000);
+                }, i * 50);
+            }
+        }
+
+        function playLabSound(type) {
+            // Create audio context for lab sound effects
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+               
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+               
+                switch(type) {
+                    case 'success':
+                        oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
+                        oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
+                        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
+                        break;
+                    case 'error':
+                        oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                        oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.2);
+                        break;
+                    case 'tool':
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+                        break;
+                }
+               
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+               
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                // Fallback if audio context fails
+                console.log('Audio not supported');
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        // Next button functionality
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            if (!this.disabled) {
+                clearInterval(gameTimer);
+                wrongAnswers++; // Count as wrong for skipping
+                combo = 0;
+                const character = characters[currentCharacter];
+                updateCharacterDialog("ข้ามไปข้อถัดไปเลยนะ! อย่าลืมศึกษาเพิ่มเติมนะ! 📚");
+               
+                setTimeout(() => {
+                    nextQuestion();
+                }, 1500);
+            }
+        });
+
+        // Event listeners
+        document.getElementById('nextQuestion').addEventListener('click', function() {
+            document.getElementById('resultModal').classList.add('hidden');
+            nextQuestion();
+        });
+
+        document.getElementById('playAgain').addEventListener('click', function() {
+            // Reset game
+            currentQuestion = 0;
+            score = 0;
+            combo = 0;
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            isDoubleScore = false;
+           
+            labTools = {
+                microscope: 3,
+                dna: 2,
+                chemical: 2,
+                serum: 1
+            };
+           
+            shuffleArray(questions);
+           
+            document.getElementById('finalModal').classList.add('hidden');
+            loadQuestion();
+            updateLabToolsDisplay();
+            startTimer();
+        });
+
+        // Close modals when clicking outside
+        document.getElementById('resultModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+                nextQuestion();
+            }
+        });
+
+        document.getElementById('finalModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                // Don't close final modal by clicking outside
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97b7aa2fe1fd6141',t:'MTc1NzI2MzQwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
